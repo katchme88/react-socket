@@ -1,29 +1,35 @@
 
 import React, { Component } from 'react'
-import SocketContext from './SocketContext'
+import SocketContext from '../../../../socket/SocketContext'
 
 class Sender extends Component {
     constructor(props){
         super(props)
         this.state = {messages: ''}
     }
+    _handleKeyDown = (e) => {
+        const ENTER_KEY = 13
+        switch(e.keyCode) {
+            case ENTER_KEY:
+                this.sendMessage()
+                e.target.value = ''
+                break;
+            default:
+                break;
+        }
+    }
     componentDidMount = () => {
         this.props.socket.emit('connected', 'client connected')
     }
-    handleSubmit = (e) => {
-        e.preventDefault()
-        this.props.socket.emit('message', this.state.value);
-        e.target.querySelector('input[type="text"]').value = ''
+    sendMessage = () => {
+        this.props.socket.emit('new message', this.state.value);
     }
     handleChange = (e) => {
         this.setState({value: e.target.value})
     }
     render() {
         return(
-            <form onSubmit={this.handleSubmit}>
-                <input type="text" onChange={this.handleChange} />
-                <input type="submit" value="Submit" />
-            </form>
+            <input type='text' className="inputMessage" placeholder="Type here..." onKeyDown={this._handleKeyDown} onChange={this.handleChange}/>
         )
     }
 }
