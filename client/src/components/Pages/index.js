@@ -4,51 +4,67 @@ import LoginPage from './LoginPage'
 import ChatPage from './ChatPage'
 
 class Pages extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
-        this.state = {messages: [], connected: false, userName: '', numUsers: 0}
-        this.props.socket.on('new message', (data)=>{
+        this.state = {messages: [], connected: false, username: '', numUsers: 0}
+        this.props.socket.on('login', (data)=>{
             this.setState( prevState => (
-                { ...prevState, messages: [...prevState.messages, {type: 'new message', data: data}] }
+                { ...prevState, connected: true, messages:[ ...prevState.messages, {type: 'login', data: data}]}
             ))}
         )
-        this.props.socket.on('login', (numUsers)=>{
-            this.setState( prevState => (
-                { ...prevState, connected: true, numUsers: numUsers}
-            ))}
-        )
-        this.props.socket.on('user joined', (data)=>{
-            this.setState( prevState => (
-                { ...prevState, messages: [...prevState.messages, {type: 'user joined', data: data}] }
-            ))}
-        )
-        this.props.socket.on('user left', (data)=>{
-            this.setState( prevState => (
-                { ...prevState, messages: [...prevState.messages, {type: 'user left', data: data}] }
-            ))}
-        )
-        this.props.socket.on('typing', (data)=>{
-            this.setState( prevState => (
-                { ...prevState, messages: [...prevState.messages, {type: 'typing', data: data}] }
-            ))}
-        )
-        this.props.socket.on('stop typing', (data)=>{
-            this.setState( prevState => (
-                { ...prevState, messages: [...prevState.messages, {type: 'stop typing', data: data}] }
-            ))}
-        )
+        this.props.socket.on('new message', (data)=> {
+            if (this.state.connected) {
+                this.setState( prevState => (
+                    { ...prevState, messages: [...prevState.messages, {type: 'new message', data: data}] }
+                ))
+            }
+        })
+        this.props.socket.on('user joined', (data)=> { 
+            if (this.state.connected) {
+                this.setState( prevState => (
+                    { ...prevState, messages: [...prevState.messages, {type: 'user joined', data: data}] }
+                ))
+            }
+        })
+        this.props.socket.on('user left', (data)=> {
+            if (this.state.connected) {
+                this.setState( prevState => (
+                    { ...prevState, messages: [...prevState.messages, {type: 'user left', data: data}] }
+                ))
+            }
+        })
+        this.props.socket.on('typing', (data)=> {
+            if (this.state.connected) {
+                this.setState( prevState => (
+                    { ...prevState, messages: [...prevState.messages, {type: 'typing', data: data}] }
+                ))
+            }
+        })
+        this.props.socket.on('stop typing', (data)=> {
+            if (this.state.connected) {
+                this.setState( prevState => (
+                    { ...prevState, messages: [...prevState.messages, {type: 'stop typing', data: data}] }
+                ))
+            }
+        })
     }
-
-    addUser=(userName)=>{
-        this.setState( prevState => ({...prevState, userName: userName}))
-        this.props.socket.emit('add user', this.state.userName)
+    addParticipantsMessage=(message)=> {
+        if (this.state.connected) {
+            this.setState( prevState => (
+                { ...prevState, messages: [...prevState.messages, {type: 'new message', data: {username: this.state.username, message: message}}] }
+            ))
+        }
+    }
+    addUser=(username)=> {
+        this.setState( prevState => ({...prevState, username: username}))
+        this.props.socket.emit('add user', username)
     }
 
     render() {
         return(
             <ul className='pages'>
-                <ChatPage connected={this.state.connected} messages={this.state.messages}/>
-                <LoginPage connected={this.state.connected} addUser={this.addUser}/>
+                <ChatPage connected={this.state.connected} messages={this.state.messages} addParticipantsMessage={this.addParticipantsMessage} />
+                <LoginPage connected={this.state.connected} addUser={this.addUser} />
             </ul>
         )
     }

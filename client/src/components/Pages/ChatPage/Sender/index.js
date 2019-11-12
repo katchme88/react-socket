@@ -23,6 +23,7 @@ class Sender extends Component {
     }
     sendMessage = () => {
         this.props.socket.emit('new message', this.state.value);
+        this.props.addParticipantsMessage(this.state.value)
     }
     handleChange = (e) => {
         this.setState({value: e.target.value})

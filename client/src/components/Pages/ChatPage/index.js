@@ -9,7 +9,7 @@ class ChatPage extends Component {
             return(
                 <li className='chat page' style={{display: 'list-item'}}>
                     <Receiver messages={this.props.messages} />
-                    <ConnectedSender />
+                    <ConnectedSender addParticipantsMessage={this.props.addParticipantsMessage} />
                 </li>
             )
         } else {
