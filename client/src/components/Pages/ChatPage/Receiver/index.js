@@ -30,9 +30,15 @@ class Receiver extends Component {
                             case 'user joined':
                                 listItem = <Fragment key={idx}><li  className='log' style={{display: 'list-item'}}>{msg.data.username + ' joined'}</li><li key={idx} className='log' style={{display: 'list-item'}}>{'there are ' + msg.data.numUsers + ' participants'}</li></Fragment>
                                 break
-                            case 'login':
-                        listItem = <Fragment key={idx}><li  className='log' style={{display: 'list-item'}}>{'Welcome to Socket.IO Chat –'}</li><li key={idx} className='log' style={{display: 'list-item'}}>{'there are ' + msg.data.numUsers + ' participants'}</li></Fragment>
+                            case 'user left':
+                                listItem = <Fragment key={idx}><li  className='log' style={{display: 'list-item'}}>{msg.data.username + ' left'}</li><li key={idx} className='log' style={{display: 'list-item'}}>{'there are ' + msg.data.numUsers + ' participants'}</li></Fragment>
                                 break
+                            case 'login':
+                                listItem = <Fragment key={idx}><li  className='log' style={{display: 'list-item'}}>{'Welcome to Socket.IO Chat –'}</li><li key={idx} className='log' style={{display: 'list-item'}}>{'there are ' + msg.data.numUsers + ' participants'}</li></Fragment>
+                                break
+                            case 'typing':
+                                    listItem =  <li key={idx} className='message'><span className='username' style={{color: this.getUsernameColor(msg.data.username)}}>{msg.data.username}</span><span className='messageBody'>{'is typing'}</span></li>
+                                    break
                             default:
                                 break;
                         }

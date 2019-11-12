@@ -42,8 +42,16 @@ class Pages extends Component {
         })
         this.props.socket.on('stop typing', (data)=> {
             if (this.state.connected) {
-                this.setState( prevState => (
-                    { ...prevState, messages: [...prevState.messages, {type: 'stop typing', data: data}] }
+                let msgs = [...this.state.messages]
+                for (let i = msgs.length - 1; i >= 0; i--) {
+                    let message = msgs[i]
+                    
+                    if (message.type === 'typing' & message.data.username === data.username) {
+                        msgs.splice(i, 1)
+                    }
+                }
+               this.setState( prevState => (
+                   { ...prevState, messages: msgs }
                 ))
             }
         })

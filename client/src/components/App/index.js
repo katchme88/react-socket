@@ -3,7 +3,7 @@ import SocketContext from '../../socket/SocketContext'
 import * as io from 'socket.io-client'
 import ConnectedPages from '../Pages'
 
-const socket = io('http://localhost:5000')
+const socket = io('http://172.16.1.65:5000')
 
 class App extends React.Component {
   render (){

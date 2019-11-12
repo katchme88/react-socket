@@ -5,7 +5,7 @@ import SocketContext from '../../../../socket/SocketContext'
 class Sender extends Component {
     constructor(props){
         super(props)
-        this.state = {messages: ''}
+        this.state = {messages: '', typing: false, lastTypingTime: 0}
     }
     _handleKeyDown = (e) => {
         const ENTER_KEY = 13
@@ -27,7 +27,23 @@ class Sender extends Component {
     }
     handleChange = (e) => {
         this.setState({value: e.target.value})
+        this.updateTyping()
     }
+    updateTyping = () => {
+        if (!this.state.typing) {
+            this.setState(prevState => ({...prevState, typing: true}))
+            this.props.socket.emit('typing');
+        }
+        this.setState(prevState=>({...prevState, lastTypingTime: (new Date()).getTime()}))
+        setTimeout(() => {
+        let typingTimer = (new Date()).getTime();
+        let timeDiff = typingTimer - this.state.lastTypingTime;
+        if (timeDiff >= 400 && this.state.typing) {
+            this.props.socket.emit('stop typing');
+            this.setState(prevState => ({...prevState, typing: false}))
+        }
+        }, 400);
+      }
     render() {
         return(
             <input type='text' className="inputMessage" placeholder="Type here..." onKeyDown={this._handleKeyDown} onChange={this.handleChange}/>
