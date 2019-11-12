@@ -42,20 +42,27 @@ class Pages extends Component {
         })
         this.props.socket.on('stop typing', (data)=> {
             if (this.state.connected) {
-                let msgs = [...this.state.messages]
-                for (let i = msgs.length - 1; i >= 0; i--) {
-                    let message = msgs[i]
-                    
-                    if (message.type === 'typing' & message.data.username === data.username) {
-                        msgs.splice(i, 1)
-                    }
-                }
-               this.setState( prevState => (
+                const msgs = this.something(data)
+                this.setState( prevState => (
                    { ...prevState, messages: msgs }
                 ))
             }
         })
     }
+
+    something=(data)=>{
+        let msgs = [...this.state.messages]
+        for (let i = msgs.length - 1; i >= 0; i--) {
+            let message = msgs[i]
+            if (message.type === 'typing' & message.data.username === data.username) {
+                msgs.splice(i, 1)
+                return(msgs)
+            }
+
+        }
+    }
+
+
     addParticipantsMessage=(message)=> {
         if (this.state.connected) {
             this.setState( prevState => (
